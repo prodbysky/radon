@@ -1,5 +1,10 @@
 #include "tokenizer.h"
 
+#include "result.h"
+
+#include <cstdlib>
+#include <iostream>
+
 std::ostream& operator<<(std::ostream& os, const TokenType& type) {
     switch (type) {
     case TokenType::Number: {
@@ -20,7 +25,7 @@ std::ostream& operator<<(std::ostream& os, const Token& token) {
 }
 
 Tokenizer::Tokenizer(std::string src) : src(src) {}
-std::vector<Token> Tokenizer::Tokenize() {
+Result<std::vector<Token>> Tokenizer::Tokenize() {
     std::vector<Token> tokens;
     std::string::iterator curr = src.begin();
     while (curr != src.end()) {
@@ -30,7 +35,12 @@ std::vector<Token> Tokenizer::Tokenize() {
         }
 
         if (std::isdigit(*curr)) {
-            tokens.push_back(Number(curr));
+            Result<Token> number = Number(curr);
+            if (number.Ok()) {
+                tokens.push_back(number.GetValue());
+            } else {
+                return Result<std::vector<Token>>(Error(number.GetError()));
+            }
         }
 
         switch (*curr) {
@@ -45,17 +55,19 @@ std::vector<Token> Tokenizer::Tokenize() {
         }
         curr++;
     }
-
-    return tokens;
+    return Result<std::vector<Token>>(tokens);
 }
 
-Token Tokenizer::Number(std::string::iterator& curr) {
+Result<Token> Tokenizer::Number(std::string::iterator& curr) {
     std::string buffer;
     buffer.push_back(*curr);
     curr++;
     while (std::isdigit(*curr)) {
         buffer.push_back(*curr);
         curr++;
+        if (!std::isspace(*curr) && !std::isdigit(*curr)) {
+            return Result<Token>(Error("Invalid character in number literal"));
+        }
     }
-    return {.type = TokenType::Number, .value = buffer};
+    return Result<Token>({.type = TokenType::Number, .value = buffer});
 }

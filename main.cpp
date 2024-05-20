@@ -15,8 +15,13 @@ i32 main(i32 argc, char* argv[]) {
     Tokenizer tokenizer(ReadWholeFile(argv[1]));
     auto tokens = tokenizer.Tokenize();
 
-    for (const auto& token : tokens) {
-        std::cerr << token << '\n';
+    if (!tokens.Ok()) {
+        std::cerr << tokens.GetError() << std::endl;
+        return -1;
+    }
+
+    for (const auto& token : tokens.GetValue()) {
+        std::cerr << token << std::endl;
     }
 }
 

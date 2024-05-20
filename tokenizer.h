@@ -1,3 +1,7 @@
+#pragma once
+
+#include "result.h"
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -16,10 +20,10 @@ struct Token {
 class Tokenizer {
 public:
     explicit Tokenizer(std::string src);
-    std::vector<Token> Tokenize();
+    Result<std::vector<Token>> Tokenize();
 
 private:
-    Token Number(std::string::iterator& curr);
+    Result<Token> Number(std::string::iterator& curr);
 
 private:
     std::string src;

@@ -1,3 +1,4 @@
 radon: main.cpp
-	g++ main.cpp -o radon -Werror -Wall -Wextra -ggdb tokenizer.cpp
+	g++ tokenizer.cpp main.cpp -o radon -Werror -Wall -Wextra -ggdb 
+	 
 

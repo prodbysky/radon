@@ -1,9 +1,11 @@
 #include "tokenizer.h"
 #include "types.h"
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 std::string ReadWholeFile(char* name);
 void Usage();

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-enum class TokenType { Number, BinaryOperator, Word, Keyword, SemiColon };
+enum class TokenType { Number, BinaryOperator, Symbol, SemiColon };
 
 std::ostream& operator<<(std::ostream& os, const TokenType& type);
 
@@ -24,8 +24,7 @@ public:
 
 private:
     Result<Token> Number(std::string::iterator& curr);
-    Result<Token> Word(std::string::iterator& curr);
-    Result<Token> Keyword(std::string::iterator& curr);
+    Result<Token> Symbol(std::string::iterator& curr);
     Result<Token> SemiColon();
 
 private:

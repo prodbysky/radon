@@ -16,12 +16,8 @@ std::ostream& operator<<(std::ostream& os, const TokenType& type) {
         os << "TokenType::BinaryOperator";
         break;
     }
-    case TokenType::Word: {
-        os << "TokenType::Word";
-        break;
-    }
-    case TokenType::Keyword: {
-        os << "TokenType::Keyword";
+    case TokenType::Symbol: {
+        os << "TokenType::Symbol";
         break;
     }
     case TokenType::SemiColon: {
@@ -57,7 +53,7 @@ Result<std::vector<Token>> Tokenizer::Tokenize() {
         }
 
         if (std::isalpha(*curr)) {
-            Result<Token> keyword = Keyword(curr);
+            Result<Token> keyword = Symbol(curr);
             tokens.push_back(keyword.GetValue());
         }
 
@@ -97,7 +93,7 @@ Result<Token> Tokenizer::Number(std::string::iterator& curr) {
     return Result<Token>({.type = TokenType::Number, .value = buffer});
 }
 
-Result<Token> Tokenizer::Word(std::string::iterator& curr) {
+Result<Token> Tokenizer::Symbol(std::string::iterator& curr) {
     std::string buffer;
     buffer.push_back(*curr);
     curr++;
@@ -106,19 +102,12 @@ Result<Token> Tokenizer::Word(std::string::iterator& curr) {
         buffer.push_back(*curr);
         curr++;
         if (*curr == ';') {
-            return Result<Token>({.type = TokenType::Word, .value = buffer});
+            return Result<Token>({.type = TokenType::Symbol, .value = buffer});
         }
     }
-    return Result<Token>({.type = TokenType::Word, .value = buffer});
+    return Result<Token>({.type = TokenType::Symbol, .value = buffer});
 }
-Result<Token> Tokenizer::Keyword(std::string::iterator& curr) {
-    Result<Token> token = Word(curr);
-    if (token.Ok()) {
-        std::string value = token.GetValue().value;
-        return Result<Token>({.type = TokenType::Keyword, .value = value});
-    }
-    return Result<Token>(Error("Failed parsing keyword"));
-}
+
 Result<Token> Tokenizer::SemiColon() {
-    return Result<Token>({.type = TokenType::Keyword, .value = ";"});
+    return Result<Token>({.type = TokenType::SemiColon, .value = ";"});
 }
